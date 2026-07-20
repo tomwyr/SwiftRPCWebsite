@@ -87,14 +87,24 @@ struct CodePanel {
                     }
                 }
             }
-            if kind == .hero {
-                div(.class("code-response")) {
-                    span(.custom(name: "aria-hidden", value: "true")) { "✓" }
-                    " \"Hello, Taylor!\""
-                }
-            }
-            span(.class("sr-only"), .custom(name: "aria-live", value: "polite"), .data("copy-status", value: "")) { "" }
+            CodePanelFooter(kind: kind)
         }
+    }
+}
+
+@View
+struct CodePanelFooter {
+    let kind: CodeKind
+
+    var body: some View {
+        if kind == .hero {
+            div(.class("code-response")) {
+                span(.custom(name: "aria-hidden", value: "true")) { "✓" }
+                " \"Hello, Taylor!\""
+            }
+        }
+
+        span(.class("sr-only"), .custom(name: "aria-live", value: "polite"), .data("copy-status", value: "")) { "" }
     }
 }
 
