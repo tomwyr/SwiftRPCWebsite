@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#10213d"/>
+  <path d="M262 213 160 315l102 102M364 213l102 102-102 102" fill="none" stroke="#f15a24" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="313" cy="315" r="18" fill="#fff"/>
+  <text x="540" y="295" fill="#fff" font-family="system-ui,sans-serif" font-size="88" font-weight="700">SwiftRPC</text>
+  <text x="540" y="365" fill="#c7d2e1" font-family="system-ui,sans-serif" font-size="34">Type-safe RPC for Swift services</text>
+</svg>
