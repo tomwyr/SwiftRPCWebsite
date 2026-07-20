@@ -1,0 +1,37 @@
+name: Set up Swift for WebAssembly
+description: Install Swift and cache its matching WebAssembly SDK
+
+inputs:
+  swift-version:
+    description: Swift toolchain version
+    default: "6.3.0"
+  sdk-url:
+    description: Swift WebAssembly SDK archive URL
+    default: >-
+      https://download.swift.org/swift-6.3-release/wasm-sdk/swift-6.3-RELEASE/swift-6.3-RELEASE_wasm.artifactbundle.tar.gz
+  sdk-checksum:
+    description: SHA-256 checksum of the SDK archive
+    default: "9fa4016ee632c7e9e906608ec3b55cf13dfc4dff44e47574c5af58064dc33fd9"
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v2
+      with:
+        swift-version: ${{ inputs.swift-version }}
+
+    - name: Cache Swift SDK for WebAssembly
+      id: wasm-sdk-cache
+      uses: actions/cache@v5
+      with:
+        path: ~/.swiftpm/swift-sdks
+        key: ${{ runner.os }}-swift-${{ inputs.swift-version }}-wasm-sdk-${{ inputs.sdk-checksum }}
+
+    - name: Install Swift SDK for WebAssembly
+      if: steps.wasm-sdk-cache.outputs.cache-hit != 'true'
+      shell: bash
+      env:
+        SWIFT_SDK_URL: ${{ inputs.sdk-url }}
+        SWIFT_SDK_CHECKSUM: ${{ inputs.sdk-checksum }}
+      run: swift sdk install "$SWIFT_SDK_URL" --checksum "$SWIFT_SDK_CHECKSUM"
