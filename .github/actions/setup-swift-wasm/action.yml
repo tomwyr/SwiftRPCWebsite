@@ -24,7 +24,16 @@ runs:
     #   uses: swift-actions/setup-swift@v2
     #   with:
     #     swift-version: ${{ inputs.swift-version }}
+
+    - name: Cache Swift toolchain
+      id: swift-toolchain-cache
+      uses: actions/cache@v5
+      with:
+        path: ~/.local/share/swiftly
+        key: ${{ runner.os }}-${{ runner.arch }}-swift-${{ inputs.swift-version }}
+
     - name: Set up Swift
+      if: steps.swift-toolchain-cache.outputs.cache-hit != 'true'
       shell: bash
       run: |
         curl -fsSL \
@@ -37,6 +46,11 @@ runs:
           --assume-yes
         . "${SWIFTLY_HOME_DIR:-$HOME/.local/share/swiftly}/env.sh"
         swiftly install "${{ inputs.swift-version }}" --use --assume-yes
+
+    - name: Add Swift to PATH
+      shell: bash
+      run: |
+        . "${SWIFTLY_HOME_DIR:-$HOME/.local/share/swiftly}/env.sh"
         echo "$SWIFTLY_BIN_DIR" >> "$GITHUB_PATH"
 
     - name: Cache Swift SDK for WebAssembly
