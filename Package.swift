@@ -5,7 +5,7 @@ let package = Package(
   name: "elementary-web-app",
   platforms: [.macOS(.v26)],
   dependencies: [
-    .package(url: "https://github.com/elementary-swift/elementary-ui.git", from: "0.2.2")
+    .package(url: "https://github.com/elementary-swift/elementary-ui.git", from: "0.5.0")
   ],
   targets: [
     .executableTarget(
