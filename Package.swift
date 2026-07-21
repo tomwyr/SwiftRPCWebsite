@@ -16,6 +16,12 @@ let package = Package(
       swiftSettings: [
         .swiftLanguageMode(.v5)
       ],
+      linkerSettings: [
+        .unsafeFlags(
+          ["-Xlinker", "-z", "-Xlinker", "stack-size=8388608"],
+          .when(configuration: .debug),
+        )
+      ],
     )
   ],
 )
