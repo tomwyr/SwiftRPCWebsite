@@ -32,21 +32,20 @@ struct AdoptionSection {
   ]
 
   var body: some View {
-    section(
-      .id("adoption"), .class("section adoption"),
-      .custom(name: "aria-labelledby", value: "adoption-title"),
-    ) {
-      div(.class("container")) {
-        div(.class("section-intro")) {
-          p(.class("overline")) { "Progressive adoption" }
-          h2(.id("adoption-title")) { "From protocol to production call" }
-          p {
+    PageSection(id: "adoption", titleID: "adoption-title") {
+      PageContainer {
+        SectionIntro(
+          eyebrow: "Progressive adoption",
+          title: "From protocol to production call",
+          titleID: "adoption-title",
+          copy:
             "The same service definition moves through each layer without recreating the contract."
-          }
-        }
+        )
 
         div(
-          .class("step-tabs"),
+          .class(
+            "mb-10 grid grid-cols-3 border-b border-border mobile:grid-cols-1 mobile:gap-2 mobile:border-0"
+          ),
           .custom(name: "role", value: "tablist"),
           .custom(name: "aria-label", value: "SwiftRPC adoption steps"),
           .data("tabs", value: ""),
@@ -55,7 +54,11 @@ struct AdoptionSection {
             button(
               .type(.button),
               .id("step-tab-\(index)"),
-              .class(index == selectedStep ? "step-tab is-active" : "step-tab"),
+              .class(
+                index == selectedStep
+                  ? "flex min-h-17 cursor-pointer items-center gap-3.5 border-x-0 border-t-0 border-b-[3px] border-orange bg-transparent px-4.5 py-3 text-left text-orange-hover [&>span]:font-mono [&>span]:text-xs [&>span]:text-orange-hover mobile:min-h-14 mobile:rounded-lg mobile:border mobile:border-orange mobile:bg-orange-tint"
+                  : "flex min-h-17 cursor-pointer items-center gap-3.5 border-x-0 border-t-0 border-b-[3px] border-transparent bg-transparent px-4.5 py-3 text-left text-secondary [&>span]:font-mono [&>span]:text-xs [&>span]:text-muted mobile:min-h-14 mobile:rounded-lg mobile:border mobile:border-border"
+              ),
               .custom(name: "role", value: "tab"),
               .custom(name: "aria-selected", value: index == selectedStep ? "true" : "false"),
               .custom(name: "aria-controls", value: "step-panel-\(index)"),
@@ -71,25 +74,36 @@ struct AdoptionSection {
 
         article(
           .id("step-panel-\(selectedStep)"),
-          .class("step-panel"),
+          .class(
+            "grid grid-cols-[minmax(260px,0.68fr)_minmax(0,1fr)] items-center gap-[72px] focus-visible:outline-offset-[10px] compact:gap-[42px] tablet:grid-cols-1 mobile:gap-[30px]"
+          ),
           .custom(name: "role", value: "tabpanel"),
           .custom(name: "aria-labelledby", value: "step-tab-\(selectedStep)"),
           .tabindex(0),
         ) {
-          div(.class("step-copy")) {
-            p(.class("step-number")) { steps[selectedStep].number }
-            h3 { steps[selectedStep].title }
-            p { steps[selectedStep].copy }
+          div {
+            p(.class("font-mono text-[13px] text-orange")) { steps[selectedStep].number }
+            h3(.class("mb-3 text-xl font-bold")) { steps[selectedStep].title }
+            p(.class("text-[17px] text-secondary")) { steps[selectedStep].copy }
             if selectedStep == 2 {
-              div(.class("step-links")) {
+              div(
+                .class(
+                  "mt-7 flex items-center gap-5 mobile:flex-col mobile:items-stretch"
+                )
+              ) {
                 span(
-                  .class("button button-primary button-compact button-disabled"),
+                  .class(
+                    "inline-flex min-h-11 cursor-not-allowed items-center justify-center rounded-lg border border-transparent bg-orange px-3.5 py-2.25 font-semibold leading-[1.35] text-white no-underline opacity-72 shadow-primary transition-[background-color,border-color,color,box-shadow] duration-180"
+                  ),
                   .custom(name: "aria-label", value: "Read the getting-started guide, coming soon"),
                 ) {
                   "Read the guide"
-                  small { "Coming soon" }
+                  UnavailableLabel()
                 }
-                a(.href("#examples"), .class("text-link")) { "Browse examples →" }
+                a(
+                  .href("#examples"),
+                  .class("font-semibold text-link no-underline hover:underline"),
+                ) { "Browse examples →" }
               }
             }
           }

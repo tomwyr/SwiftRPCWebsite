@@ -5,7 +5,7 @@ import appInit from "virtual:swift-wasm?init";
 await runApplication(appInit);
 
 const header = document.querySelector<HTMLElement>("[data-site-header]");
-const hero = document.querySelector<HTMLElement>(".hero");
+const hero = document.querySelector<HTMLElement>("[data-hero]");
 
 if (header && hero) {
   const observer = new IntersectionObserver(
@@ -38,7 +38,7 @@ document.addEventListener("keydown", (event) => {
 
   if (event.key === "Escape") {
     const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
-    const toggle = document.querySelector<HTMLButtonElement>(".menu-button");
+    const toggle = document.querySelector<HTMLButtonElement>("[data-menu-button]");
     if (menu && toggle) {
       toggle.click();
       toggle.focus();
@@ -51,7 +51,7 @@ document.addEventListener("click", async (event) => {
   if (!button) return;
 
   const label = button.querySelector<HTMLElement>("[data-copy-label]");
-  const status = button.closest(".code-window")?.querySelector<HTMLElement>("[data-copy-status]");
+  const status = button.closest("[data-code-window]")?.querySelector<HTMLElement>("[data-copy-status]");
   const text = button.dataset.copyCode ?? "";
 
   button.classList.remove("is-error");
@@ -77,7 +77,7 @@ document.addEventListener("click", async (event) => {
 window.addEventListener("resize", () => {
   if (window.innerWidth > 820) {
     const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
-    const toggle = document.querySelector<HTMLButtonElement>(".menu-button");
+    const toggle = document.querySelector<HTMLButtonElement>("[data-menu-button]");
     if (menu && toggle) toggle.click();
   }
 });

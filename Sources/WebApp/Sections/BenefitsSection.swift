@@ -28,26 +28,36 @@ struct BenefitsSection {
   ]
 
   var body: some View {
-    section(
-      .class("section section-alt"),
-      .custom(name: "aria-labelledby", value: "benefits-title"),
-    ) {
-      div(.class("container")) {
-        div(.class("section-intro")) {
-          p(.class("overline")) { "Why SwiftRPC" }
-          h2(.id("benefits-title")) { "One contract, end to end" }
-          p {
+    PageSection(titleID: "benefits-title", hasSurface: true) {
+      PageContainer {
+        SectionIntro(
+          eyebrow: "Why SwiftRPC",
+          title: "One contract, end to end",
+          titleID: "benefits-title",
+          copy:
             "Keep transport details at the boundary while the rest of your application speaks ordinary Swift."
-          }
-        }
-        div(.class("benefit-grid")) {
+        )
+        div(
+          .class(
+            "grid grid-cols-4 gap-5 compact:grid-cols-2 mobile:grid-cols-1"
+          )
+        ) {
           ForEach(benefits, key: { $0.title }) { benefit in
-            article(.class("benefit-card")) {
-              span(.class("feature-icon"), .custom(name: "aria-hidden", value: "true")) {
+            article(
+              .class(
+                "min-h-56.5 rounded-xl border border-border bg-white p-7 mobile:min-h-0"
+              )
+            ) {
+              span(
+                .class(
+                  "mb-7 inline-grid size-11 place-items-center rounded-[10px] border border-[#f4b299] bg-orange-tint font-mono text-xl text-orange-hover"
+                ),
+                .custom(name: "aria-hidden", value: "true"),
+              ) {
                 benefit.icon
               }
-              h3 { benefit.title }
-              p { benefit.copy }
+              h3(.class("mb-3 text-xl font-bold")) { benefit.title }
+              p(.class("m-0 text-secondary")) { benefit.copy }
             }
           }
         }

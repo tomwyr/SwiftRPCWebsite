@@ -16,36 +16,58 @@ enum CodeKind {
   }
 
   var copyText: String {
+    codeLines.map { $0.plainText }.joined(separator: "\n")
+  }
+
+  var codeLines: [CodeSnippet.Line] {
     switch self {
     case .hero:
-      """
-      @RPCService
-      protocol GreetingService {
-          func greet(name: String) async throws -> String
-      }
-
-      let greeting = try await client.greet(name: "Taylor")
-      """
+      [
+        [.accent("@RPCService")],
+        [.keyword("protocol"), " ", .type("GreetingService"), " {"],
+        [
+          "    ", .keyword("func"), " ", .accent("greet"), "(name: ", .type("String"),
+          ") ", .keyword("async throws"), " -> ", .type("String"),
+        ],
+        ["}"],
+        [],
+        [
+          .keyword("let"), " greeting = ", .keyword("try await"), " client.",
+          .accent("greet"), "(name: ", .string("\"Taylor\""), ")",
+        ],
+      ]
     case .protocolStep:
-      """
-      @RPCService
-      protocol UserService {
-          func user(id: User.ID) async throws -> User
-      }
-      """
+      [
+        [.accent("@RPCService")],
+        [.keyword("protocol"), " ", .type("UserService"), " {"],
+        [
+          "    ", .keyword("func"), " ", .accent("user"), "(id: ", .type("User.ID"),
+          ") ", .keyword("async throws"), " -> ", .type("User"),
+        ],
+        ["}"],
+      ]
     case .handlerStep:
-      """
-      struct UserHandler: UserServiceHandler {
-          func user(id: User.ID) async throws -> User {
-              try await repository.find(id)
-          }
-      }
-      """
+      [
+        [
+          .keyword("struct"), " ", .type("UserHandler"), ": ", .type("UserServiceHandler"),
+          " {",
+        ],
+        [
+          "    ", .keyword("func"), " ", .accent("user"), "(id: ", .type("User.ID"),
+          ") ", .keyword("async throws"), " -> ", .type("User"), " {",
+        ],
+        ["        ", .keyword("try await"), " repository.", .accent("find"), "(id)"],
+        ["    }"],
+        ["}"],
+      ]
     case .clientStep:
-      """
-      let user = try await users.user(id: selectedID)
-      print(user.displayName)
-      """
+      [
+        [
+          .keyword("let"), " user = ", .keyword("try await"), " users.", .accent("user"),
+          "(id: selectedID)",
+        ],
+        [.accent("print"), "(user.displayName)"],
+      ]
     }
   }
 }
@@ -55,39 +77,57 @@ struct CodePanel {
   let kind: CodeKind
 
   var body: some View {
-    div(.class(kind == .hero ? "code-window hero-code" : "code-window")) {
-      div(.class("code-titlebar")) {
-        div(.class("window-controls"), .custom(name: "aria-hidden", value: "true")) {
+    div(
+      .class(
+        kind == .hero
+          ? "min-w-0 w-full max-w-140 animate-code-enter overflow-hidden rounded-xl border border-[#253451] bg-code text-[#eef4ff] shadow-code tablet:max-w-none"
+          : "min-w-0 overflow-hidden rounded-xl border border-[#253451] bg-code text-[#eef4ff] shadow-code"
+      ),
+      .data("code-window", value: ""),
+    ) {
+      div(
+        .class(
+          "grid min-h-[50px] grid-cols-[56px_1fr_auto_auto] items-center gap-3 border-b border-[#253451] bg-[#15223a] px-[14px] mobile:grid-cols-[38px_minmax(0,1fr)_auto] mobile:gap-2"
+        )
+      ) {
+        div(
+          .class(
+            "flex gap-1.5 mobile:gap-1 [&>span]:size-2 [&>span]:rounded-full [&>span]:bg-[#66758d] mobile:[&>span]:size-1.75"
+          ),
+          .custom(name: "aria-hidden", value: "true"),
+        ) {
           span { "" }
           span { "" }
           span { "" }
         }
-        span(.class("code-filename")) { kind.filename }
-        span(.class("language-label")) { "Swift" }
+        span(
+          .class(
+            "overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-[#cad6e9]"
+          )
+        ) {
+          kind.filename
+        }
+        span(.class("font-mono text-[11px] text-[#93a5c1] mobile:hidden")) { "Swift" }
         button(
           .type(.button),
-          .class("copy-button"),
+          .class(
+            "inline-flex min-h-9 min-w-18 cursor-pointer items-center justify-center gap-1.5 rounded-[7px] border border-[#40506c] bg-[#1c2a45] px-2.5 py-1.5 font-mono text-[11px] text-[#e7eef9] hover:border-[#788ba8] hover:bg-[#253654] [&.is-success]:border-[#3b9a6c] [&.is-success]:text-[#a8e2c4] [&.is-error]:border-[#d68d65] [&.is-error]:text-[#ffd0b9] mobile:min-w-15.5 mobile:px-2"
+          ),
           .data("copy-code", value: kind.copyText),
           .custom(name: "aria-label", value: "Copy \(kind.filename) code"),
         ) {
-          span(.class("copy-icon"), .custom(name: "aria-hidden", value: "true")) { "□" }
+          span(.custom(name: "aria-hidden", value: "true")) { "□" }
           span(.data("copy-label", value: "")) { "Copy" }
         }
       }
       pre(
-        .class("code-content"),
+        .class(
+          "m-0 min-h-47 overflow-x-auto px-5 py-6 font-mono text-sm leading-[1.65] tab-4 mobile:px-3.5 mobile:py-5 mobile:text-xs"
+        ),
         .custom(name: "aria-label", value: "\(kind.filename) source code"),
       ) {
         code {
-          if kind == .hero {
-            HeroCode()
-          } else if kind == .protocolStep {
-            ProtocolCode()
-          } else if kind == .handlerStep {
-            HandlerCode()
-          } else {
-            ClientCode()
-          }
+          CodeSnippet(lines: kind.codeLines)
         }
       }
       CodePanelFooter(kind: kind)
@@ -101,7 +141,11 @@ struct CodePanelFooter {
 
   var body: some View {
     if kind == .hero {
-      div(.class("code-response")) {
+      div(
+        .class(
+          "border-t border-[#253451] bg-[#0c1526] px-5 py-3 font-mono text-[13px] text-[#bce7ca]"
+        )
+      ) {
         span(.custom(name: "aria-hidden", value: "true")) { "✓" }
         " \"Hello, Taylor!\""
       }
@@ -111,156 +155,5 @@ struct CodePanelFooter {
       .class("sr-only"), .custom(name: "aria-live", value: "polite"),
       .data("copy-status", value: ""),
     ) { "" }
-  }
-}
-
-@View
-struct HeroCode {
-  var body: some View {
-    span(.class("code-line")) {
-      span(.class("line-number")) { "1" }
-      span(.class("syntax-macro")) { "@RPCService" }
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "2" }
-      span(.class("syntax-keyword")) { "protocol" }
-      " "
-      span(.class("syntax-type")) { "GreetingService" }
-      " {"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "3" }
-      "    "
-      span(.class("syntax-keyword")) { "func" }
-      " "
-      span(.class("syntax-method")) { "greet" }
-      "(name: "
-      span(.class("syntax-type")) { "String" }
-      ") "
-      span(.class("syntax-keyword")) { "async throws" }
-      " -> "
-      span(.class("syntax-type")) { "String" }
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "4" }
-      "}"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "5" }
-      " "
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "6" }
-      span(.class("syntax-keyword")) { "let" }
-      " greeting = "
-      span(.class("syntax-keyword")) { "try await" }
-    }
-    span(.class("code-line code-indent")) {
-      span(.class("line-number")) { " " }
-      "client."
-      span(.class("syntax-method")) { "greet" }
-      "(name: "
-      span(.class("syntax-string")) { "\"Taylor\"" }
-      ")"
-    }
-  }
-}
-
-@View
-struct ProtocolCode {
-  var body: some View {
-    span(.class("code-line")) {
-      span(.class("line-number")) { "1" }
-      span(.class("syntax-macro")) { "@RPCService" }
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "2" }
-      span(.class("syntax-keyword")) { "protocol" }
-      " "
-      span(.class("syntax-type")) { "UserService" }
-      " {"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "3" }
-      "    "
-      span(.class("syntax-keyword")) { "func" }
-      " "
-      span(.class("syntax-method")) { "user" }
-      "(id: "
-      span(.class("syntax-type")) { "User.ID" }
-      ") "
-      span(.class("syntax-keyword")) { "async throws" }
-      " -> "
-      span(.class("syntax-type")) { "User" }
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "4" }
-      "}"
-    }
-  }
-}
-
-@View
-struct HandlerCode {
-  var body: some View {
-    span(.class("code-line")) {
-      span(.class("line-number")) { "1" }
-      span(.class("syntax-keyword")) { "struct" }
-      " "
-      span(.class("syntax-type")) { "UserHandler" }
-      ": "
-      span(.class("syntax-type")) { "UserServiceHandler" }
-      " {"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "2" }
-      "    "
-      span(.class("syntax-keyword")) { "func" }
-      " "
-      span(.class("syntax-method")) { "user" }
-      "(id: "
-      span(.class("syntax-type")) { "User.ID" }
-      ") "
-      span(.class("syntax-keyword")) { "async throws" }
-      " -> "
-      span(.class("syntax-type")) { "User" }
-      " {"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "3" }
-      "        "
-      span(.class("syntax-keyword")) { "try await" }
-      " repository."
-      span(.class("syntax-method")) { "find" }
-      "(id)"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "4" }
-      "    }"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "5" }
-      "}"
-    }
-  }
-}
-
-@View
-struct ClientCode {
-  var body: some View {
-    span(.class("code-line")) {
-      span(.class("line-number")) { "1" }
-      span(.class("syntax-keyword")) { "let" }
-      " user = "
-      span(.class("syntax-keyword")) { "try await" }
-      " users."
-      span(.class("syntax-method")) { "user" }
-      "(id: selectedID)"
-    }
-    span(.class("code-line")) {
-      span(.class("line-number")) { "2" }
-      span(.class("syntax-method")) { "print" }
-      "(user.displayName)"
-    }
   }
 }

@@ -1,0 +1,20 @@
+{
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "swift": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    [
+      "\\.class\\s*\\(([\\s\\S]*?)\\)",
+      "\"([^\"]*)\""
+    ]
+  ],
+  "tailwindCSS.experimental.configFile": "styles.css",
+  "[swift]": {
+    "editor.quickSuggestions": {
+      "strings": "on"
+    }
+  }
+}

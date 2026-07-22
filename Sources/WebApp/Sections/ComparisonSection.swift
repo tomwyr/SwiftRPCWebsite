@@ -23,39 +23,83 @@ struct ComparisonSection {
   ]
 
   var body: some View {
-    section(
-      .id("examples"), .class("section comparison"),
-      .custom(name: "aria-labelledby", value: "comparison-title"),
-    ) {
-      div(.class("container comparison-container")) {
-        div(.class("section-intro")) {
-          p(.class("overline")) { "Before and after" }
-          h2(.id("comparison-title")) { "Less contract glue" }
-          p {
+    PageSection(id: "examples", titleID: "comparison-title") {
+      PageContainer(additionalClasses: "max-w-240") {
+        SectionIntro(
+          eyebrow: "Before and after",
+          title: "Less contract glue",
+          titleID: "comparison-title",
+          copy:
             "Replace manually synchronized routes, payloads, and client wrappers with one typed service definition."
-          }
-        }
+        )
 
         div(
-          .class("comparison-table"), .custom(name: "role", value: "table"),
+          .class(
+            "overflow-hidden rounded-xl border border-border mobile:overflow-visible mobile:border-0"
+          ),
+          .custom(name: "role", value: "table"),
           .custom(name: "aria-label", value: "Manual API and SwiftRPC comparison"),
         ) {
-          div(.class("comparison-head"), .custom(name: "role", value: "row")) {
-            strong(.custom(name: "role", value: "columnheader")) { "Manual API" }
-            strong(.custom(name: "role", value: "columnheader")) { "SwiftRPC" }
+          div(
+            .class("grid grid-cols-2 mobile:hidden"),
+            .custom(name: "role", value: "row"),
+          ) {
+            strong(
+              .class("bg-surface px-6 py-4.5"),
+              .custom(name: "role", value: "columnheader"),
+            ) {
+              "Manual API"
+            }
+            strong(
+              .class("border-t-[3px] border-orange bg-orange-tint px-6 py-4.5"),
+              .custom(name: "role", value: "columnheader"),
+            ) { "SwiftRPC" }
           }
           ForEach(rows, key: { $0.manual }) { row in
-            div(.class("comparison-row"), .custom(name: "role", value: "row")) {
-              div(.class("manual-cell"), .custom(name: "role", value: "cell")) {
-                span(.class("mobile-cell-label")) { "Manual API" }
-                span(.class("comparison-symbol"), .custom(name: "aria-hidden", value: "true")) {
+            div(
+              .class(
+                "grid grid-cols-2 mobile:mb-3.5 mobile:grid-cols-1 mobile:overflow-hidden mobile:rounded-[10px] mobile:border mobile:border-border"
+              ),
+              .custom(name: "role", value: "row"),
+            ) {
+              div(
+                .class(
+                  "border-t border-border px-6 py-4.25 mobile:grid mobile:grid-cols-1 mobile:px-4.5 mobile:py-4"
+                ),
+                .custom(name: "role", value: "cell"),
+              ) {
+                span(
+                  .class(
+                    "mb-1.5 hidden font-mono text-[10px] font-bold tracking-[0.06em] text-muted uppercase mobile:block"
+                  )
+                ) { "Manual API" }
+                span(
+                  .class(
+                    "inline-block w-6 font-bold text-muted mobile:hidden"
+                  ),
+                  .custom(name: "aria-hidden", value: "true"),
+                ) {
                   "—"
                 }
                 row.manual
               }
-              div(.class("rpc-cell"), .custom(name: "role", value: "cell")) {
-                span(.class("mobile-cell-label")) { "SwiftRPC" }
-                span(.class("comparison-symbol"), .custom(name: "aria-hidden", value: "true")) {
+              div(
+                .class(
+                  "border-t border-border bg-[#fff9f6] px-6 py-4.25 mobile:grid mobile:grid-cols-1 mobile:px-4.5 mobile:py-4"
+                ),
+                .custom(name: "role", value: "cell"),
+              ) {
+                span(
+                  .class(
+                    "mb-1.5 hidden font-mono text-[10px] font-bold tracking-[0.06em] text-muted uppercase mobile:block"
+                  )
+                ) { "SwiftRPC" }
+                span(
+                  .class(
+                    "inline-block w-6 font-bold text-success mobile:hidden"
+                  ),
+                  .custom(name: "aria-hidden", value: "true"),
+                ) {
                   "✓"
                 }
                 row.swiftRPC
@@ -64,7 +108,7 @@ struct ComparisonSection {
           }
         }
 
-        p(.class("comparison-closing")) {
+        p(.class("mt-7 text-center text-lg font-semibold text-ink")) {
           "One protocol remains the source of truth across client and server."
         }
       }
