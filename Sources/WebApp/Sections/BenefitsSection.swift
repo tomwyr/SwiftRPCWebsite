@@ -1,11 +1,5 @@
 import ElementaryUI
 
-private struct Benefit {
-  let icon: String
-  let title: String
-  let copy: String
-}
-
 @View
 struct BenefitsSection {
   private let benefits = [
@@ -64,4 +58,10 @@ struct BenefitsSection {
       }
     }
   }
+}
+
+private struct Benefit {
+  let icon: String
+  let title: String
+  let copy: String
 }

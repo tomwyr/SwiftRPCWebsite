@@ -2,24 +2,13 @@ import ElementaryUI
 
 @View
 struct CodeSnippet {
-  struct Line: ExpressibleByArrayLiteral, Equatable, Sendable {
-    let fragments: [Fragment]
-
-    init(arrayLiteral fragments: Fragment...) {
-      self.fragments = fragments
-    }
-
-    var plainText: String {
-      fragments.map { $0.text }.joined()
-    }
-  }
-
-  enum Fragment: ExpressibleByStringLiteral, Equatable, Sendable {
+  enum Token: ExpressibleByStringLiteral, Equatable, Sendable {
     case plain(String)
     case keyword(String)
     case type(String)
     case accent(String)
     case string(String)
+    case br
 
     init(stringLiteral value: String) {
       self = .plain(value)
@@ -30,11 +19,23 @@ struct CodeSnippet {
       case .plain(let text), .keyword(let text), .type(let text), .accent(let text),
         .string(let text):
         text
+      case .br:
+        "\n"
       }
     }
   }
 
-  let lines: [Line]
+  let tokens: [Token]
+
+  private var lines: [[Token]] {
+    tokens.reduce(into: [[]]) { lines, token in
+      if token == .br {
+        lines.append([])
+      } else {
+        lines[lines.endIndex - 1].append(token)
+      }
+    }
+  }
 
   var body: some View {
     ForEach(Array(lines.enumerated()), key: { $0.offset }) { index, line in
@@ -44,8 +45,8 @@ struct CodeSnippet {
             "mr-3.5 inline-block w-7.5 select-none text-[#62728e] mobile:mr-2.25 mobile:w-5.5"
           )
         ) { "\(index + 1)" }
-        ForEach(Array(line.fragments.enumerated()), key: { $0.offset }) { _, fragment in
-          CodeSnippetFragment(fragment: fragment)
+        ForEach(Array(line.enumerated()), key: { $0.offset }) { _, token in
+          CodeSnippetToken(token: token)
         }
       }
     }
@@ -53,11 +54,11 @@ struct CodeSnippet {
 }
 
 @View
-private struct CodeSnippetFragment {
-  let fragment: CodeSnippet.Fragment
+private struct CodeSnippetToken {
+  let token: CodeSnippet.Token
 
   var body: some View {
-    switch fragment {
+    switch token {
     case .plain(let text):
       text
     case .keyword(let text):
@@ -68,6 +69,8 @@ private struct CodeSnippetFragment {
       span(.class("text-[#ff8a61]")) { text }
     case .string(let text):
       span(.class("text-[#a7dfa8]")) { text }
+    case .br:
+      ""
     }
   }
 }

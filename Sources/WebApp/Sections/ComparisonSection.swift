@@ -1,10 +1,5 @@
 import ElementaryUI
 
-private struct ComparisonRow {
-  let manual: String
-  let swiftRPC: String
-}
-
 @View
 struct ComparisonSection {
   private let rows = [
@@ -41,6 +36,11 @@ struct ComparisonSection {
       }
     }
   }
+}
+
+private struct ComparisonRow {
+  let manual: String
+  let swiftRPC: String
 }
 
 @View

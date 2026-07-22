@@ -49,7 +49,7 @@ struct HeroSection {
           }
         }
 
-        CodePanel(kind: .hero)
+        CodePanel(data: .hero)
       }
     }
   }

@@ -1,12 +1,5 @@
 import ElementaryUI
 
-private struct AdoptionStep {
-  let number: String
-  let title: String
-  let copy: String
-  let kind: CodeKind
-}
-
 @View
 struct AdoptionSection {
   @Binding var selectedStep: Int
@@ -15,19 +8,19 @@ struct AdoptionSection {
     AdoptionStep(
       number: "01", title: "Define protocol",
       copy: "Describe the service with ordinary Swift types. The macro supplies the RPC metadata.",
-      kind: .protocolStep,
+      snippet: .protocolStep,
     ),
     AdoptionStep(
       number: "02", title: "Implement handler",
       copy:
         "Conform to the generated handler contract and keep business logic independent from the transport.",
-      kind: .handlerStep,
+      snippet: .handlerStep,
     ),
     AdoptionStep(
       number: "03", title: "Call typed client",
       copy:
         "Create a client through your server integration and call the service like a local async API.",
-      kind: .clientStep,
+      snippet: .clientStep,
     ),
   ]
 
@@ -47,6 +40,13 @@ struct AdoptionSection {
       }
     }
   }
+}
+
+private struct AdoptionStep {
+  let number: String
+  let title: String
+  let copy: String
+  let snippet: CodeSnippetData
 }
 
 @View
@@ -128,7 +128,7 @@ private struct AdoptionStepPanel {
           }
         }
       }
-      CodePanel(kind: step.kind)
+      CodePanel(data: step.snippet)
     }
   }
 }
