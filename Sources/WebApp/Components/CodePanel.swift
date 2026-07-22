@@ -85,41 +85,7 @@ struct CodePanel {
       ),
       .data("code-window", value: ""),
     ) {
-      div(
-        .class(
-          "grid min-h-[50px] grid-cols-[56px_1fr_auto_auto] items-center gap-3 border-b border-[#253451] bg-[#15223a] px-[14px] mobile:grid-cols-[38px_minmax(0,1fr)_auto] mobile:gap-2"
-        )
-      ) {
-        div(
-          .class(
-            "flex gap-1.5 mobile:gap-1 [&>span]:size-2 [&>span]:rounded-full [&>span]:bg-[#66758d] mobile:[&>span]:size-1.75"
-          ),
-          .custom(name: "aria-hidden", value: "true"),
-        ) {
-          span { "" }
-          span { "" }
-          span { "" }
-        }
-        span(
-          .class(
-            "overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-[#cad6e9]"
-          )
-        ) {
-          kind.filename
-        }
-        span(.class("font-mono text-[11px] text-[#93a5c1] mobile:hidden")) { "Swift" }
-        button(
-          .type(.button),
-          .class(
-            "inline-flex min-h-9 min-w-18 cursor-pointer items-center justify-center gap-1.5 rounded-[7px] border border-[#40506c] bg-[#1c2a45] px-2.5 py-1.5 font-mono text-[11px] text-[#e7eef9] hover:border-[#788ba8] hover:bg-[#253654] [&.is-success]:border-[#3b9a6c] [&.is-success]:text-[#a8e2c4] [&.is-error]:border-[#d68d65] [&.is-error]:text-[#ffd0b9] mobile:min-w-15.5 mobile:px-2"
-          ),
-          .data("copy-code", value: kind.copyText),
-          .custom(name: "aria-label", value: "Copy \(kind.filename) code"),
-        ) {
-          span(.custom(name: "aria-hidden", value: "true")) { "□" }
-          span(.data("copy-label", value: "")) { "Copy" }
-        }
-      }
+      CodePanelToolbar(kind: kind)
       pre(
         .class(
           "m-0 min-h-47 overflow-x-auto px-5 py-6 font-mono text-sm leading-[1.65] tab-4 mobile:px-3.5 mobile:py-5 mobile:text-xs"
@@ -136,7 +102,50 @@ struct CodePanel {
 }
 
 @View
-struct CodePanelFooter {
+private struct CodePanelToolbar {
+  let kind: CodeKind
+
+  var body: some View {
+    div(
+      .class(
+        "grid min-h-[50px] grid-cols-[56px_1fr_auto_auto] items-center gap-3 border-b border-[#253451] bg-[#15223a] px-[14px] mobile:grid-cols-[38px_minmax(0,1fr)_auto] mobile:gap-2"
+      )
+    ) {
+      div(
+        .class(
+          "flex gap-1.5 mobile:gap-1 [&>span]:size-2 [&>span]:rounded-full [&>span]:bg-[#66758d] mobile:[&>span]:size-1.75"
+        ),
+        .custom(name: "aria-hidden", value: "true"),
+      ) {
+        span { "" }
+        span { "" }
+        span { "" }
+      }
+      span(
+        .class(
+          "overflow-hidden font-mono text-xs text-ellipsis whitespace-nowrap text-[#cad6e9]"
+        )
+      ) {
+        kind.filename
+      }
+      span(.class("font-mono text-[11px] text-[#93a5c1] mobile:hidden")) { "Swift" }
+      button(
+        .type(.button),
+        .class(
+          "inline-flex min-h-9 min-w-18 cursor-pointer items-center justify-center gap-1.5 rounded-[7px] border border-[#40506c] bg-[#1c2a45] px-2.5 py-1.5 font-mono text-[11px] text-[#e7eef9] hover:border-[#788ba8] hover:bg-[#253654] [&.is-success]:border-[#3b9a6c] [&.is-success]:text-[#a8e2c4] [&.is-error]:border-[#d68d65] [&.is-error]:text-[#ffd0b9] mobile:min-w-15.5 mobile:px-2"
+        ),
+        .data("copy-code", value: kind.copyText),
+        .custom(name: "aria-label", value: "Copy \(kind.filename) code"),
+      ) {
+        span(.custom(name: "aria-hidden", value: "true")) { "□" }
+        span(.data("copy-label", value: "")) { "Copy" }
+      }
+    }
+  }
+}
+
+@View
+private struct CodePanelFooter {
   let kind: CodeKind
 
   var body: some View {

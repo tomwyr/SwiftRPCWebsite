@@ -22,7 +22,7 @@ struct SiteHeader {
 
         nav(
           .class(
-            "flex items-center gap-2.5 tablet:hidden [&>a]:inline-flex [&>a]:min-h-11 [&>a]:items-center [&>a]:px-3 [&>a]:py-2 [&>a]:font-semibold [&>a]:text-ink [&>a]:no-underline [&>a]:transition-colors [&>a]:duration-180xt-orange-hover [&>a:hover]:underline"
+            "flex items-center gap-2.5 tablet:hidden [&>a]:inline-flex [&>a]:min-h-11 [&>a]:items-center [&>a]:px-3 [&>a]:py-2 [&>a]:font-semibold [&>a]:text-ink [&>a]:no-underline [&>a]:transition-colors [&>a]:duration-180 [&>a:hover]:text-orange-hover [&>a:hover]:underline"
           ),
           .custom(name: "aria-label", value: "Primary navigation"),
         ) {

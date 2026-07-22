@@ -29,7 +29,7 @@ struct IntegrationsSection {
 }
 
 @View
-struct IntegrationCard {
+private struct IntegrationCard {
   let image: String
   let name: String
   let copy: String

@@ -45,7 +45,7 @@ struct SiteFooter {
 }
 
 @View
-struct FooterColumn {
+private struct FooterColumn {
   let title: String
   let links: [String]
 

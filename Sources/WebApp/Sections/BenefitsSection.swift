@@ -1,6 +1,6 @@
 import ElementaryUI
 
-struct Benefit {
+private struct Benefit {
   let icon: String
   let title: String
   let copy: String
@@ -8,7 +8,7 @@ struct Benefit {
 
 @View
 struct BenefitsSection {
-  let benefits = [
+  private let benefits = [
     Benefit(
       icon: "⌘", title: "One shared protocol",
       copy: "Define operations and data shapes in one place.",
