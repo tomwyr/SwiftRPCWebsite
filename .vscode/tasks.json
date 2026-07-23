@@ -1,0 +1,57 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Container: Build current project",
+      "type": "process",
+      "command": "container",
+      "args": [
+        "run",
+        "--rm",
+        "--arch",
+        "amd64",
+        "--rosetta",
+        "--cpus",
+        "4",
+        "--memory",
+        "8G",
+        "--volume",
+        "swiftrpcwebsite-build-cache:/workspace/.build",
+        "--mount",
+        "type=bind,source=${workspaceFolder},target=/source,readonly",
+        "swiftrpcwebsite-ci"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Container: Build current project (clean)",
+      "type": "process",
+      "command": "container",
+      "args": [
+        "run",
+        "--rm",
+        "--arch",
+        "amd64",
+        "--rosetta",
+        "--cpus",
+        "4",
+        "--memory",
+        "8G",
+        "--mount",
+        "type=bind,source=${workspaceFolder},target=/source,readonly",
+        "swiftrpcwebsite-ci"
+      ],
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

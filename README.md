@@ -78,6 +78,43 @@ npm run build
 npm run preview
 ```
 
+## Linux Build Verification
+
+Use the container to build the current working tree in a Linux environment that matches CI without writing Linux artifacts to macOS.
+
+Build the Linux toolchain image once:
+
+```sh
+container system start
+container build \
+  --arch amd64 \
+  --cpus 4 \
+  --memory 8G \
+  --tag swiftrpcwebsite-ci \
+  .
+container volume create swiftrpcwebsite-build-cache
+```
+
+Rebuild it after changing `Containerfile` or `scripts/container-entrypoint`.
+
+Build the current working tree:
+
+```sh
+container run \
+  --rm \
+  --arch amd64 \
+  --rosetta \
+  --cpus 4 \
+  --memory 8G \
+  --volume swiftrpcwebsite-build-cache:/workspace/.build \
+  --mount type=bind,source="$PWD",target=/source,readonly \
+  swiftrpcwebsite-ci
+```
+
+The named volume preserves Swift build outputs and npm downloads. Omit `--volume` for a clean build. The source mount remains read-only.
+
+In VS Code, run **Container: Build current project** or **Container: Build current project (clean)** from **Terminal → Run Task…**.
+
 ## Configuration
 
 The template comes with a [Vite config](vite.config.ts) that uses *Embedded Swift* for release builds.

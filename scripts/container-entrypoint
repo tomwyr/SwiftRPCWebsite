@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source_dir="${SOURCE_DIR:-/source}"
+workspace_dir="${WORKSPACE_DIR:-/workspace}"
+
+if [[ ! -f "${source_dir}/Package.swift" || ! -f "${source_dir}/package-lock.json" ]]; then
+  echo "Expected an ElementaryUI project mounted read-only at ${source_dir}." >&2
+  exit 1
+fi
+
+mkdir -p "${workspace_dir}"
+mkdir -p "${workspace_dir}/.build/npm-cache"
+
+# Work on an ephemeral Linux copy so build products never touch the macOS tree.
+tar \
+  --create \
+  --file - \
+  --directory "${source_dir}" \
+  --exclude .build \
+  --exclude .git \
+  --exclude dist \
+  --exclude node_modules \
+  . \
+  | tar --extract --file - --directory "${workspace_dir}"
+
+export npm_config_cache="${workspace_dir}/.build/npm-cache"
+
+cd "${workspace_dir}"
+
+# package.json references BrowserRuntime inside SwiftPM's checkout directory.
+swift package resolve
+npm ci
+
+if (( $# == 0 )); then
+  set -- npm run build
+fi
+
+exec "$@"
